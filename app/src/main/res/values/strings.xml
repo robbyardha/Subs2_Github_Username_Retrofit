@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Submission2_Github_Retrofit</string>
+    <string name="github_username">github_username</string>
+    <string name="github_name">github_name</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tab1">Followers</string>
+    <string name="tab2">Following</string>
+    <string name="tab3">Repository</string>
+</resources>
