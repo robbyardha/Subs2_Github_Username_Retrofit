@@ -17,49 +17,69 @@ class DetailUserActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailUserBinding
 
     private lateinit var viewModel: DetailUserViewModel
+    var bundle = Bundle()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        detailGithub()
+        configurationOfViewPager()
+    }
+
+    private fun detailGithub()
+    {
+        //IntentStringExtra
         val username = intent.getStringExtra(EXTRA_USERNAME)
-
-
         //bundle fragment
-        val bundle = Bundle()
         bundle.putString(EXTRA_USERNAME, username)
+        viewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(DetailUserViewModel::class.java)
+        if (username == null){
 
-
-
-        viewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(
-            DetailUserViewModel::class.java)
-        viewModel.setUserDetail(username!!)
+        }else{
+            viewModel.setUserDetail(username)
+        }
+//        viewModel.setUserDetail(username!!)
         viewModel.getUserDetail().observe(this, {
             if (it != null){
-                binding.apply {
-                    tvUsername.text = it.login
-                    tvNama.text = it.name
-                    tvBio.text = it.bio
-                    tvCompany.text = "Company : ${it.company}"
-                    tvLocation.text = "Location : ${it.location}"
-                    tvFollowers.text = "Followers: ${it.followers}"
-                    tvFollowing.text = "Following: ${it.following}"
-                    tvRepository.text = "Repository: ${it.public_repos}"
-                    Glide.with(this@DetailUserActivity)
-                            .load(it.avatar_url)
-                            .into(circleAvatarDetail)
+                //Declaration Binding get XML
+                val bindLogin = binding.tvUsername
+                val bindNama = binding.tvNama
+                val bindBio = binding.tvBio
+                val bindCompany = binding.tvCompany
+                val bindLocation = binding.tvLocation
+                val bindFollowers= binding.tvFollowers
+                val bindFollowings = binding.tvFollowing
+                val bindRepository = binding.tvRepository
+                val bindAvatarGithub = binding.circleAvatarDetail
 
-                    var actionBarTitle = supportActionBar
-                    actionBarTitle!!.title = "Detail Of ${it.login}"
-                }
+//                Load data
+                bindLogin.text = it.login
+                bindNama.text = it.name
+                bindBio.text = it.bio
+                bindCompany.text = "Company : ${it.company}"
+                bindLocation.text = "Location : ${it.location}"
+                bindFollowers.text = "Followers: ${it.followers}"
+                bindFollowings.text = "Following: ${it.following}"
+                bindRepository.text ="Repository: ${it.public_repos}"
+                Glide.with(this@DetailUserActivity)
+                        .load(it.avatar_url)
+                        .into(bindAvatarGithub)
+
+                //LoadAction Bar name
+                var actionBarTitle = supportActionBar
+                actionBarTitle!!.title = "Detail Of ${it.login}"
+
             }
         })
+    }
 
-        val sectionPagerAdapter = SectionPagerAdapter(this, supportFragmentManager, bundle)
-        binding.apply {
-            viewPager.adapter = sectionPagerAdapter
-            clicktabs.setupWithViewPager(viewPager)
-        }
+    private fun configurationOfViewPager()
+    {
+        var sectionPagerAdapter = SectionPagerAdapter(this, supportFragmentManager, bundle)
+        binding.viewPager.adapter = sectionPagerAdapter
+        var bindClickTabs = binding.clicktabs
+        bindClickTabs.setupWithViewPager(binding.viewPager)
     }
 }

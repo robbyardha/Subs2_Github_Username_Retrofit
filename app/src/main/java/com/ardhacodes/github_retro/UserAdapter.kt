@@ -8,7 +8,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 
-class UserAdapter : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+class UserAdapter(private var listusergithub : ArrayList<Githubuser>) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
     private val list = ArrayList<Githubuser>()
 
     private var onItemClickCallback: OnItemClickCallback? = null

@@ -44,7 +44,7 @@ class UserViewModel : ViewModel() {
                 .getUsers()
                 .enqueue(object : Callback<GithubResponse>{
                     override fun onResponse(call: Call<GithubResponse>, response: Response<GithubResponse>) {
-                        if (response.isSuccessful){
+                        if (response == null){
                             listuser.postValue(response.body()?.items)
                         }
                     }

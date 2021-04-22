@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: UserViewModel
     private lateinit var adapter: UserAdapter
+    private var arrList : ArrayList<Githubuser> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,38 +24,29 @@ class MainActivity : AppCompatActivity() {
         TitleActionBar()
         selectedUsernameGithub()
 
-        //Change Function biar simple
-//        adapter = UserAdapter()
-//        adapter.notifyDataSetChanged()
-//
-//        adapter.setOnItemClickCallback(object : UserAdapter.OnItemClickCallback {
-//            override fun onItemClicked(data: Githubuser) {
-//                Intent(this@MainActivity, DetailUserActivity::class.java).also {
-//                    it.putExtra(DetailUserActivity.EXTRA_USERNAME, data.login)
-//                    startActivity(it)
-//                }
-//            }
-//        })
 
         viewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(UserViewModel::class.java)
 
-        binding.apply {
-            rvGithubuser.layoutManager = LinearLayoutManager(this@MainActivity)
-            rvGithubuser.setHasFixedSize(true)
-            rvGithubuser.adapter = adapter
-            //GetUsers()
-            btnSearch.setOnClickListener{
-                searchUsers()
-            }
+        binding.rvGithubuser.layoutManager = LinearLayoutManager(this)
+        binding.rvGithubuser.setHasFixedSize(true)
+        binding.rvGithubuser.adapter = adapter
 
-            editQuery.setOnKeyListener { v, keyCode, event ->
-                if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER){
-                    searchUsers()
-                    return@setOnKeyListener true
-                }
-                return@setOnKeyListener false
-            }
+        //GetUsers
+        binding.btnSearch.setOnClickListener{
+            searchUsers()
         }
+
+        binding.editQuery.setOnKeyListener { v, keyCode, event ->
+            if(event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER){
+                searchUsers()
+                return@setOnKeyListener true
+            }else if(event.action == null && keyCode == null){
+                GetUsers()
+                return@setOnKeyListener true
+            }
+            return@setOnKeyListener false
+        }
+
         viewModel.getSearchUsers().observe(this)
         {
          if (it!=null){
@@ -67,12 +59,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun searchUsers()
     {
-        binding.apply {
-            val query = editQuery.text.toString()
-            if (query.isEmpty()) return
-            showLoading(true)
-            viewModel.setSearchUsername(query)
-        }
+        val query = binding.editQuery.text.toString()
+        if (query.isEmpty() || query == null) return
+        showLoading(true)
+        viewModel.setSearchUsername(query)
+
     }
 
     private fun showLoading(state: Boolean){
@@ -99,15 +90,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun selectedUsernameGithub()
     {
-        adapter = UserAdapter()
+        adapter = UserAdapter(arrList)
         adapter.notifyDataSetChanged()
 
+//        adapter = UserAdapter()
+//        adapter.notifyDataSetChanged()
+//
         adapter.setOnItemClickCallback(object : UserAdapter.OnItemClickCallback {
             override fun onItemClicked(data: Githubuser) {
-                Intent(this@MainActivity, DetailUserActivity::class.java).also {
-                    it.putExtra(DetailUserActivity.EXTRA_USERNAME, data.login)
-                    startActivity(it)
-                }
+                val intent = Intent(this@MainActivity, DetailUserActivity::class.java)
+                val intentPutExtra = intent.putExtra(DetailUserActivity.EXTRA_USERNAME, data.login)
+                startActivity(intentPutExtra)
             }
         })
     }

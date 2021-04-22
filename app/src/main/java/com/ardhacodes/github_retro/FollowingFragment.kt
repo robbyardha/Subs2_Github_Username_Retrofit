@@ -32,6 +32,7 @@ class FollowingFragment : Fragment(R.layout.fragment_following) {
     private lateinit var viewModel: FollowingVM
     private lateinit var adapter: UserAdapter
     private lateinit var username: String
+    private var arrList: ArrayList<Githubuser> = ArrayList()
 
 
 
@@ -46,13 +47,10 @@ class FollowingFragment : Fragment(R.layout.fragment_following) {
 //        _binding = FragmentFollowingBinding.bind(view)
 
 
-        adapter = UserAdapter()
+        adapter = UserAdapter(arrList)
         adapter.notifyDataSetChanged()
-        binding.apply {
-            rvGithubuser.setHasFixedSize(true)
-            rvGithubuser.layoutManager = LinearLayoutManager(activity)
-            rvGithubuser.adapter = adapter
-        }
+
+        configRv()
         showLoading(true)
         viewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(FollowingVM::class.java)
         viewModel.setListFollowing(username)
@@ -80,6 +78,13 @@ class FollowingFragment : Fragment(R.layout.fragment_following) {
         }else{
             binding.progressBar.visibility = View.GONE
         }
+    }
+
+    private fun configRv()
+    {
+        binding.rvGithubuser.setHasFixedSize(true)
+        binding.rvGithubuser.layoutManager = LinearLayoutManager(activity)
+        binding.rvGithubuser.adapter = adapter
     }
 
     override fun onDestroyView() {
